@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			body {
+				background-color: #bebebe;
+			}
+			table {
+				font-size: 125%;
+				white-space: nowrap;
+				margin: 0;
+				border: none;
+				border-collapse: separate;
+				border-spacing: 0;
+				table-layout: fixed;
+			}
+			table td,
+			table th {
+				padding: 0.5rem 1rem;
+			}
+			table th {
+				position: relative;
+			}
+			.resizer {
+				/* Displayed at the right side of column */
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 5px;
+				cursor: col-resize;
+				user-select: none;
+			}
+
+			table thead th {
+				padding: 10px;
+				position: sticky;
+				top: 0;
+				z-index: 1;
+				background: #bebebe;
+			}
+
+			table thead th:first-child {
+				position: sticky;
+				left: 0;
+				z-index: 2;
+			}
+
+			table tbody th:first-child {
+				position: sticky;
+				left: 0;
+				background: #bebebe;
+				z-index: 1;
+				letter-spacing: 5px;
+				text-align: left;
+			}
+
+			[role="region"][aria-labelledby][tabindex] {
+				/* width: 100%; */
+				max-height: 98vh;
+				overflow: auto;
+			}
+			[role="region"][aria-labelledby][tabindex]:focus {
+				box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
+				outline: 0;
+			}
+			.asset-row {
+				box-shadow: 0px 1px 0px rgba(26, 26, 26, 0.5);
+			}
+			.divider {
+				height: 2px;
+			}
+
+			.resizer:hover,
+			.resizing {
+				border-right: 2px solid blue;
+			}
+		</style>
+	</head>
+	<body>
+		<div role="region" aria-labelledby="caption" tabindex="0">
+			<table id="resizeMe" class="table">
+				<thead>
+					<tr id="thead-row">
+						<th>Title</th>
+					</tr>
+				</thead>
+				<tbody id="tbody"></tbody>
+			</table>
+		</div>
+		<script>
+			let metaprops = new Array(5).fill("metaprop");
+
+			const tHeadRow = document.getElementById("thead-row");
+
+			metaprops.forEach((mp, i) => {
+				let tag = document.createElement("th");
+				let text = document.createTextNode(`${mp} ${i + 1}`);
+				tag.appendChild(text);
+				tHeadRow.appendChild(tag);
+			});
+
+			const assets = new Array(5).fill("asset title");
+
+			const tbody = document.getElementById("tbody");
+
+			assets.forEach((asset, i) => {
+				let row = document.createElement("tr");
+				row.setAttribute("class", "asset-row");
+				let rowHeader = document.createElement("th");
+
+				let headerText = document.createTextNode(`${asset} ${i + 1}`);
+
+				rowHeader.appendChild(headerText);
+
+				row.appendChild(rowHeader);
+
+				metaprops.forEach((mp, i) => {
+					let tag = document.createElement("td");
+					let text = document.createTextNode(`${mp} ${i + 1}`);
+					tag.appendChild(text);
+					row.appendChild(tag);
+				});
+				const divider = document.createElement("div");
+				divider.setAttribute("class", "divider");
+				tbody.appendChild(row);
+				tbody.appendChild(divider);
+			});
+
+			const createResizableColumn = function (col, resizer) {
+				console.log(col, resizer);
+				// Track the current position of mouse
+				let x = 0;
+				let w = 0;
+
+				const mouseDownHandler = function (e) {
+					// Get the current mouse position
+					x = e.clientX;
+
+					// Calculate the current width of column
+					const styles = window.getComputedStyle(col);
+					w = parseInt(styles.width, 10);
+
+					// Attach listeners for document's events
+					document.addEventListener("mousemove", mouseMoveHandler);
+					document.addEventListener("mouseup", mouseUpHandler);
+					resizer.classList.add("resizing");
+				};
+
+				const mouseMoveHandler = function (e) {
+					// Determine how far the mouse has been moved
+					const dx = e.clientX - x;
+
+					// Update the width of column
+					col.style.width = `${w + dx}px`;
+				};
+
+				// When user releases the mouse, remove the existing event listeners
+				const mouseUpHandler = function () {
+					document.removeEventListener("mousemove", mouseMoveHandler);
+					document.removeEventListener("mouseup", mouseUpHandler);
+					resizer.classList.remove("resizing");
+				};
+
+				resizer.addEventListener("mousedown", mouseDownHandler);
+			};
+
+			const table = document.getElementById("resizeMe");
+			// Query all headers
+			const cols = table.querySelectorAll("th");
+			// Loop over them
+			[].forEach.call(cols, function (col) {
+				// Create a resizer element
+				const resizer = document.createElement("div");
+				resizer.classList.add("resizer");
+
+				// Set the height
+				resizer.style.height = `${table.offsetHeight}px`;
+
+				// Add a resizer element to the column
+				col.appendChild(resizer);
+
+				// Will be implemented in the next section
+				createResizableColumn(col, resizer);
+			});
+		</script>
+	</body>
+</html>
