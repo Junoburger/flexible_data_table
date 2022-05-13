@@ -16,7 +16,8 @@
 				border: none;
 				border-collapse: separate;
 				border-spacing: 0;
-				table-layout: fixed;
+				table-layout: auto;
+				width: 100%;
 			}
 			table td,
 			table th {
@@ -58,15 +59,6 @@
 				text-align: left;
 			}
 
-			[role="region"][aria-labelledby][tabindex] {
-				/* width: 100%; */
-				max-height: 98vh;
-				overflow: auto;
-			}
-			[role="region"][aria-labelledby][tabindex]:focus {
-				box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
-				outline: 0;
-			}
 			.asset-row {
 				box-shadow: 0px 1px 0px rgba(26, 26, 26, 0.5);
 			}
@@ -76,23 +68,29 @@
 
 			.resizer:hover,
 			.resizing {
-				border-right: 2px solid blue;
+				border-right: 2px solid rgba(0, 0, 0, 0.5);
+			}
+
+			.table-wrapper {
+				width: 100vw;
 			}
 		</style>
 	</head>
-	<body>
-		<div role="region" aria-labelledby="caption" tabindex="0">
-			<table id="resizeMe" class="table">
-				<thead>
-					<tr id="thead-row">
-						<th>Title</th>
-					</tr>
-				</thead>
-				<tbody id="tbody"></tbody>
-			</table>
-		</div>
+	<body id="body">
+		<!-- <div id="table-wrapper" role="region" aria-labelledby="caption" tabindex="0"> -->
+		<table id="resizeMe" class="table">
+			<thead>
+				<tr id="thead-row">
+					<th>Title</th>
+				</tr>
+			</thead>
+			<tbody id="tbody"></tbody>
+		</table>
+		<!-- </div> -->
 		<script>
-			let metaprops = new Array(5).fill("metaprop");
+			document.getElementById("body").style.width = `${window.innerWidth}px`;
+
+			let metaprops = new Array(21).fill("metaprop");
 
 			const tHeadRow = document.getElementById("thead-row");
 
@@ -103,7 +101,7 @@
 				tHeadRow.appendChild(tag);
 			});
 
-			const assets = new Array(5).fill("asset title");
+			const assets = new Array(21).fill("asset title");
 
 			const tbody = document.getElementById("tbody");
 
@@ -131,10 +129,9 @@
 			});
 
 			const createResizableColumn = function (col, resizer) {
-				console.log(col, resizer);
 				// Track the current position of mouse
 				let x = 0;
-				let w = 0;
+				let width = 0;
 
 				const mouseDownHandler = function (e) {
 					// Get the current mouse position
@@ -142,7 +139,7 @@
 
 					// Calculate the current width of column
 					const styles = window.getComputedStyle(col);
-					w = parseInt(styles.width, 10);
+					width = parseInt(styles.width, 10);
 
 					// Attach listeners for document's events
 					document.addEventListener("mousemove", mouseMoveHandler);
@@ -153,9 +150,8 @@
 				const mouseMoveHandler = function (e) {
 					// Determine how far the mouse has been moved
 					const dx = e.clientX - x;
-
 					// Update the width of column
-					col.style.width = `${w + dx}px`;
+					col.style.width = `${width + dx}px`;
 				};
 
 				// When user releases the mouse, remove the existing event listeners
