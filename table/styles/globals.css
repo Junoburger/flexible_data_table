@@ -2,112 +2,11 @@ body {
 	margin: 0; /* prevents scrollbars */
 	overflow: hidden;
 }
-table {
-	width: 100vw;
-	height: 100vh;
-	display: grid;
-	grid-template-areas: "head" "body";
-	font-size: 120%;
-	white-space: nowrap;
-	overflow: auto;
-	scroll-snap-type: x mandatory;
-	/* overview */
-	width: 85vw;
-	height: 85vh;
-	margin: 50px;
-}
-
-table thead {
-	display: grid;
-	grid-template-columns: subgrid;
-	grid-template-rows: subgrid;
-}
-table thead th:first-child {
-	position: sticky;
-}
-
-table tbody {
-	display: grid;
-	grid-template-columns: subgrid;
-	grid-area: body;
-	grid-row-gap: 8px;
-}
-
-table thead tr {
-	display: grid;
-	grid-template-columns: minmax(250px, auto) repeat(20, minmax(200px, auto));
-	grid-template-rows: minmax(80px, auto);
-	/* grid-template-rows: subgrid; */
-	text-align: center;
-}
-
-table tbody tr {
-	display: grid;
-	grid-template-columns: minmax(250px, auto) repeat(20, minmax(200px, auto));
-	grid-template-rows: minmax(80px, auto);
-	/* grid-template-rows: subgrid; */
-	text-align: center;
-}
-
-.snappy-row {
-	grid-column-gap: 8px;
-}
-
-table thead th:first-child {
-	position: sticky;
-	left: 0;
-	background: white;
-	z-index: 4;
-	letter-spacing: 5px;
-	text-align: left;
-}
-
-table tbody th:first-child {
-	position: sticky;
-	left: 0;
-	background: white;
-	z-index: 1;
-	letter-spacing: 5px;
-	text-align: left;
-}
 
 .wrapper {
 	width: 100vw;
 	overflow: auto;
 	max-height: 100vh;
-}
-
-table td,
-table th {
-	/* border: 1px solid black; */
-	padding: 0.5rem 1rem;
-	scroll-snap-align: start;
-	/* white-space: pre-line; */
-}
-/* th[scope="row"], */
-table thead th {
-	position: sticky;
-}
-
-thead {
-	position: sticky;
-	top: 0;
-	grid-area: head;
-	z-index: 4;
-	background-color: white;
-}
-
-th {
-	position: sticky;
-	top: 0;
-	z-index: 2;
-}
-
-.divider {
-	height: 0.5px;
-	box-shadow: 0px -2px 4px 0px rgb(0, 0, 0);
-
-	z-index: 2;
 }
 
 .resizer {
@@ -126,40 +25,8 @@ th {
 	border-right: 2px solid rgba(0, 0, 0, 0.5);
 }
 
-.masked-table {
-	/* scroll bar width, for use in mask calculations */
-	--scrollbar-width: 8px;
-
-	/* mask fade distance, for use in mask calculations */
-	--mask-height: 32px;
-
-	/* The CSS mask */
-	/* The content mask is a linear gradient from top to bottom */
-	--mask-image-content: linear-gradient(
-		to right,
-		rgb(0, 0, 0) var(--mask-height),
-		rgb(0, 0, 0) var(--mask-height),
-		rgb(0, 0, 0) calc(100% - var(--mask-height)),
-		transparent
-	);
-
-	/* Here we scale the content gradient to the width of the container 
-  minus the scrollbar width. The height is the full container height */
-	--mask-size-content: calc(100% - var(--scrollbar-width)) 100%;
-
-	/* The width of our black pixel is the width of the scrollbar.
-  The height is the full container height */
-	--mask-size-scrollbar: var(--scrollbar-width) 100%;
-
-	/* Apply the mask image and mask size variables */
-	mask-image: var(--mask-image-content);
-
-	mask-size: var(--mask-size-content), var(--mask-size-scrollbar);
-
-	/* Position the content gradient in the top left, and the 
-  scroll gradient in the top right */
-	mask-position: 0 0, 100% 0;
-
-	/* We don't repeat our mask images */
-	mask-repeat: no-repeat, no-repeat;
+.long {
+	white-space: nowrap;
+	text-overflow: "[..]";
+	overflow: hidden;
 }
